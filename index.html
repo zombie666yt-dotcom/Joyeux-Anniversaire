@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Joyeux Anniversaire 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#07060F}
+body{display:flex;align-items:center;justify-content:center;position:relative;}
+canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+.scene{
+  position:relative;z-index:1;
+  width:100%;max-width:440px;
+  height:100dvh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:0;
+}
+.heart{
+  width:100px;height:100px;
+  margin-bottom:32px;flex-shrink:0;
+  filter:drop-shadow(0 0 18px rgba(220,30,50,0.55)) drop-shadow(0 0 40px rgba(200,20,40,0.3));
+  animation:lubdub 1.8s ease-in-out infinite;
+}
+@keyframes lubdub{
+  0%   {transform:scale(1);}
+  10%  {transform:scale(1.18);}
+  20%  {transform:scale(1.02);}
+  30%  {transform:scale(1.13);}
+  45%  {transform:scale(1);}
+  100% {transform:scale(1);}
+}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(54px,14vw,84px);
+  font-weight:300;font-style:italic;
+  color:#f5d97a;line-height:1.05;text-align:center;
+  opacity:0;animation:fu 1s 0.4s forwards;
+}
+h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,#f5d97a 0%,#fff8e0 55%,#f5d97a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+@keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.msg{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,3.8vw,18px);
+  font-weight:300;font-style:italic;
+  color:rgba(245,217,122,0.75);
+  text-align:center;line-height:1.8;
+  max-width:320px;
+  margin-top:28px;padding:0 8px;
+  opacity:0;animation:fu 1s 1s forwards;
+}
+.btn-secret{
+  margin-top:32px;
+  border:1px solid rgba(245,217,122,0.4);
+  border-radius:50px;
+  padding:12px 30px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(13px,3.5vw,16px);
+  font-style:italic;
+  color:rgba(245,217,122,0.7);
+  background:rgba(245,217,122,0.05);
+  cursor:pointer;
+  transition:background 0.2s,border-color 0.2s,transform 0.15s;
+  -webkit-tap-highlight-color:transparent;
+  opacity:0;animation:fu 1s 1.6s forwards;
+}
+.btn-secret:active{transform:scale(0.96);}
+.secret{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,4.2vw,20px);
+  font-weight:400;font-style:italic;
+  color:#f5d97a;
+  text-align:center;
+  max-width:300px;
+  margin-top:0;
+  padding:0 8px;
+  max-height:0;overflow:hidden;
+  opacity:0;
+  transition:max-height 0.7s ease,opacity 0.7s ease,margin-top 0.5s ease;
+}
+.secret.show{max-height:120px;opacity:1;margin-top:20px;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="scene">
+  <svg class="heart" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg"><path d="M50 85 C50 85 5 52 5 28 C5 14 16 5 28 5 C37 5 45 11 50 18 C55 11 63 5 72 5 C84 5 95 14 95 28 C95 52 50 85 50 85Z" fill="#E8102A"/></svg>
+  <h1>Joyeux<br><em>Anniversaire</em><br>mon amour</h1>
+  <p class="msg">Je t'aime mon cœur, tu es ma lumière dans les ténèbres de ce monde, ma rose blanche dans un champ d'orties, tu es mon monde, tu es mon tout 💘</p>
+  <button class="btn-secret" onclick="reveal()">✦ Pour toi</button>
+  <p class="secret" id="secret">Je t'offre mon cœur en cadeau 💝</p>
+</div>
+<script>
+function reveal(){
+  const s=document.getElementById('secret');
+  const b=document.querySelector('.btn-secret');
+  s.classList.add('show');
+  b.style.display='none';
+  for(let i=0;i<8;i++)setTimeout(()=>shooters.push(mkShooter()),i*100);
+}
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let W,H,stars=[],shooters=[],sparks=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+window.addEventListener('resize',resize);resize();
+function rnd(a,b){return a+Math.random()*(b-a);}
+function mkStar(){return{x:rnd(0,W),y:rnd(0,H),r:rnd(0.4,1.6),a:rnd(0.2,0.9),pulse:rnd(0.003,0.012),t:rnd(0,Math.PI*2)};}
+for(let i=0;i<200;i++)stars.push(mkStar());
+function mkShooter(){
+  const sx=rnd(W*0.05,W*0.95),sy=rnd(0,H*0.5);
+  const angle=rnd(Math.PI*0.1,Math.PI*0.4),speed=rnd(8,16);
+  return{x:sx,y:sy,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:rnd(0.018,0.03),trail:[]};
+}
+function mkSpark(x,y){
+  const angle=rnd(0,Math.PI*2),speed=rnd(1,5);
+  return{x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:rnd(0.03,0.07),r:rnd(1,2.5)};
+}
+canvas.addEventListener('click',e=>{
+  for(let i=0;i<5;i++)setTimeout(()=>shooters.push(mkShooter()),i*130);
+  for(let i=0;i<20;i++)sparks.push(mkSpark(e.clientX,e.clientY));
+});
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#07060F';ctx.fillRect(0,0,W,H);
+  for(const s of stars){
+    s.t+=s.pulse;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,248,220,${s.a*(0.6+0.4*Math.sin(s.t))})`;ctx.fill();
+  }
+  shooters.forEach((s,i)=>{
+    s.trail.push({x:s.x,y:s.y});
+    if(s.trail.length>22)s.trail.shift();
+    s.x+=s.vx;s.y+=s.vy;s.life-=s.decay;
+    for(let j=0;j<s.trail.length;j++){
+      const f=j/s.trail.length,pt=s.trail[j];
+      ctx.beginPath();ctx.arc(pt.x,pt.y,1.3*f,0,Math.PI*2);
+      ctx.fillStyle=`rgba(245,217,122,${s.life*f*0.9})`;ctx.fill();
+    }
+    ctx.beginPath();ctx.arc(s.x,s.y,1.8,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,230,${s.life})`;ctx.fill();
+    if(s.life<=0)shooters.splice(i,1);
+  });
+  sparks.forEach((sp,i)=>{
+    sp.x+=sp.vx;sp.y+=sp.vy;sp.vy+=0.09;sp.life-=sp.decay;
+    ctx.beginPath();ctx.arc(sp.x,sp.y,sp.r*sp.life,0,Math.PI*2);
+    ctx.fillStyle=`rgba(245,217,122,${sp.life*0.8})`;ctx.fill();
+    if(sp.life<=0)sparks.splice(i,1);
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+setTimeout(()=>{shooters.push(mkShooter());setTimeout(()=>shooters.push(mkShooter()),900);},1800);
+setInterval(()=>{if(Math.random()<0.45)shooters.push(mkShooter());},4000);
+</script>
+</body>
+</html>
